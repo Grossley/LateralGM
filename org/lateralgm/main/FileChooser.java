@@ -41,7 +41,6 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
-import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -812,10 +811,12 @@ public class FileChooser
 			{
 			if (fc.showSaveDialog(LGM.frame) != JFileChooser.APPROVE_OPTION) return false;
 			file = fc.getSelectedFile();
-			if (forceExt.isSelected())
+			FileFilter ff = fc.getFileFilter();
+			if ((ff instanceof CustomFileFilter) && !ff.accept(file))
 				{
-				String ext = selectedWriter.getExtension();
-				if (!file.getName().endsWith(ext)) file = new File(file.getPath() + ext);
+				String[] exts = ((CustomFileFilter)ff).getExtensions();
+				if (exts.length > 0)
+					file = new File(file.getPath() + exts[0]);
 				}
 			// Create the folder for the user, otherwise people get confused.
 			if (selectedWriter.getFlavor().equals(GMX) && file.getName().endsWith(".project.gmx")) //$NON-NLS-1$
@@ -1030,8 +1031,6 @@ public class FileChooser
 		return false;
 		}
 
-	JCheckBox forceExt = new JCheckBox(Messages.getString("FileChooser.FORCE_EXT"),true); //$NON-NLS-1$
-
 	JPanel makeSelectionAccessory()
 		{
 		JPanel p = new JPanel();
@@ -1057,7 +1056,6 @@ public class FileChooser
 		JPanel r = new JPanel();
 		r.setLayout(new BoxLayout(r,BoxLayout.PAGE_AXIS));
 		r.add(new JScrollPane(p));
-		r.add(forceExt);
 		return r;
 		}
 	}
