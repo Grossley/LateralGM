@@ -23,8 +23,6 @@ package org.lateralgm.main;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -38,14 +36,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.TransferHandler;
@@ -801,8 +794,6 @@ public class FileChooser
 	public boolean saveNewFile()
 		{
 		fc.setFilterSet(saveFs);
-		//Populated fresh each time to ensure an up-to-date list of writers
-		fc.setAccessory(makeSelectionAccessory());
 		URI uri = LGM.currentFile.uri;
 		File file = uri == null ? null : new File(uri);
 		fc.setSelectedFile(file);
@@ -1029,33 +1020,5 @@ public class FileChooser
 			return true;
 			}
 		return false;
-		}
-
-	JPanel makeSelectionAccessory()
-		{
-		JPanel p = new JPanel();
-		p.setLayout(new BoxLayout(p,BoxLayout.PAGE_AXIS));
-		ButtonGroup bg = new ButtonGroup();
-		selectedWriter = findWriter(LGM.currentFile.format);
-		// pick an arbitrary default
-		if (selectedWriter == null) selectedWriter = writers.get(0);
-		for (final FileWriter writer : writers)
-			{
-			JRadioButton b = new JRadioButton(writer.getSelectionName(),selectedWriter == writer);
-			bg.add(b);
-			p.add(b);
-			b.addActionListener(new ActionListener()
-				{
-					public void actionPerformed(ActionEvent e)
-						{
-						selectedWriter = writer;
-						}
-				});
-			}
-
-		JPanel r = new JPanel();
-		r.setLayout(new BoxLayout(r,BoxLayout.PAGE_AXIS));
-		r.add(new JScrollPane(p));
-		return r;
 		}
 	}
