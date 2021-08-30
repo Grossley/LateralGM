@@ -654,7 +654,7 @@ public final class GmFileReader
 				if (ver >= 800)
 					{
 					int subver = in.read4();
-					if (subver != 800 && subver != 810) throw versionError(f,"IN","SPR",i,subver); //$NON-NLS-1$ //$NON-NLS-2$
+					//if (subver != 800 && subver != 810)// throw versionError(f,"IN","SPR",i,subver); //$NON-NLS-1$ //$NON-NLS-2$
 					w = in.read4();
 					h = in.read4();
 					if (w != 0 && h != 0) spr.subImages.add(in.readBGRAImage(w,h));
@@ -667,10 +667,24 @@ public final class GmFileReader
 				}
 			if (ver >= 800)
 				{
+				try
+					{
 				spr.put(PSprite.SHAPE,ProjectFile.SPRITE_MASK_SHAPE[in.read4()]);
+					}
+				catch (Exception e)
+				{
+				spr.put(PSprite.SHAPE,ProjectFile.SPRITE_MASK_SHAPE[0]);				
+				}
 				spr.put(PSprite.ALPHA_TOLERANCE,in.read4());
 				spr.put(PSprite.SEPARATE_MASK,in.readBool());
+				try
+					{
 				actualBBMode = ProjectFile.SPRITE_BB_MODE[in.read4()];
+					}
+				catch (Exception e)
+					{
+					actualBBMode = ProjectFile.SPRITE_BB_MODE[0];					
+					}
 				in.read4(spr.properties,PSprite.BB_LEFT,PSprite.BB_RIGHT,PSprite.BB_BOTTOM,PSprite.BB_TOP);
 				}
 			spr.put(PSprite.BB_MODE,actualBBMode); //now bbmode is ready
@@ -731,7 +745,7 @@ public final class GmFileReader
 				in.read4(back.properties,PBackground.TILE_WIDTH,PBackground.TILE_HEIGHT,
 						PBackground.H_OFFSET,PBackground.V_OFFSET,PBackground.H_SEP,PBackground.V_SEP);
 				ver = in.read4();
-				if (ver != 800) throw versionError(f,"IN","BKG",i,ver); //$NON-NLS-1$ //$NON-NLS-2$
+				//if (ver != 800) throw versionError(f,"IN","BKG",i,ver); //$NON-NLS-1$ //$NON-NLS-2$
 				int w = in.read4();
 				int h = in.read4();
 				if (w != 0 && h != 0) back.setBackgroundImage(in.readBGRAImage(w,h));

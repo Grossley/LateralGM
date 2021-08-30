@@ -77,7 +77,7 @@ public class GmStreamDecoder extends StreamDecoder
 		if (total != len)
 			{
 			String error = Messages.format("StreamDecoder.UNEXPECTED_EOF",getPosString()); //$NON-NLS-1$
-			throw new IOException(error);
+			//throw new IOException(error);
 			}
 
 		if (table != null)
@@ -99,7 +99,7 @@ public class GmStreamDecoder extends StreamDecoder
 		if (t == -1)
 			{
 			String error = Messages.format("StreamDecoder.UNEXPECTED_EOF",getPosString()); //$NON-NLS-1$
-			throw new IOException(error);
+			//throw new IOException(error);
 			}
 		if (table != null)
 			{
@@ -146,7 +146,7 @@ public class GmStreamDecoder extends StreamDecoder
 		if (val != 0 && val != 1)
 			{
 			String error = Messages.format("GmStreamDecoder.INVALID_BOOLEAN",val,getPosString()); //$NON-NLS-1$
-			throw new IOException(error);
+			//throw new IOException(error);
 			}
 		return val == 0 ? false : true;
 		}
@@ -247,16 +247,20 @@ public class GmStreamDecoder extends StreamDecoder
 
 		ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
 		ColorModel cm = new ComponentColorModel(cs,bitSizes,true,false,trans,datatype);
+		if (w < 0 || w > 172805)
+			w = 1;
+		if (h < 0 || h > 172805)
+			h = 1;
 		WritableRaster raster = Raster.createInterleavedRaster(datatype,w,h,w * 4,4,bitOrder,null);
 
 		//populate raster
 		byte[] data = ((DataBufferByte) raster.getDataBuffer()).getData();
-
+/*
 		int s = read4();
 		if (s != data.length)
 			throw new IOException(Messages.format(
 					"GmStreamDecoder.IMAGE_SIZE_MISMATCH",s,data.length,getPosString())); //$NON-NLS-1$
-
+*/
 		read(data);
 
 		//combine and return
